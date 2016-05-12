@@ -36,13 +36,6 @@ if (IS_COVERAGE_ACTIVE) {
         return instrumenter.instrument(content, path, callback);
     }
 
-
-    getContains = function (configNamespace, file) {
-        if (!_.isUndefined(Conf.include)) {
-
-        }
-    }
-
     shallInstrumentClientScript = function (fileurl) {
         if (fileurl.indexOf('.js') > -1) {
             let _inapp, _public;
