@@ -37,17 +37,32 @@ if (IS_COVERAGE_ACTIVE) {
     }
 
 
+    getContains = function (configNamespace, file) {
+        if (!_.isUndefined(Conf.include)) {
+
+        }
+    }
+
     shallInstrumentClientScript = function (fileurl) {
         if (fileurl.indexOf('.js') > -1) {
+            let _inapp, _public;
+            if (!_.isUndefined(Conf.include)) {
+                _inapp = _.contains(Conf.include.clientside.inapp, fileurl);
+                _public = _.contains(Conf.include.clientside.public, fileurl);
+            }
+            else {
+                _inapp = !_.contains(Conf.ignore.clientside.inapp, fileurl);
+                _public = !_.contains(Conf.ignore.clientside.public, fileurl);
+            }
             if (fileurl.indexOf('packages') === 1) {
-                if (!_.contains(Conf.ignore.clientside.inapp, fileurl)) {
+                if (_inapp) {
                     Log.info("[ClientSide][InApp] file instrumented: " + fileurl)
                     return true;
                 } else {
                     Log.info("[ClientSide][InApp] file ignored: " + fileurl)
                 }
             } else {
-                if (!_.contains(Conf.ignore.clientside.public, fileurl)) {
+                if (_public) {
                     Log.info("[ClientSide][Public] file instrumented: " + fileurl)
                     return true;
                 } else {
@@ -76,19 +91,31 @@ if (IS_COVERAGE_ACTIVE) {
             Log.info("[ServerSide][node_modules] file ignored: " + file)
             return false;
         }
-        if (file.indexOf('/packages') >= 0) {
-            var packageName = file.split('/packages/');
-            if (!_.contains(Conf.ignore.serverside, packageName[1])) {
-                SourceMap.registerSourceMap(root+file);
-                Log.info("[ServerSide][Package] file instrumented: " + file)
+        if (!_.isUndefined(Conf.include)) {
+            if (_.contains(Conf.include.serverside, file)) {
+                SourceMap.registerSourceMap(root + file);
+                Log.info("[ServerSide][App.js] file instrumented: " + file)
                 return true;
-            } else {
-                Log.info("[ServerSide][Package] file ignored: " + file)
             }
-        } else {
-            SourceMap.registerSourceMap(root+file);
-            Log.info("[ServerSide][App.js] file instrumented: " + file)
-            return true;
+            else {
+                Log.info("[ServerSide][Package] file ignored: " + file);
+            }
+        }
+        else {
+            if (file.indexOf('/packages') >= 0) {
+                var packageName = file.split('/packages/');
+                if (!_.contains(Conf.ignore.serverside, packageName[1])) {
+                    SourceMap.registerSourceMap(root + file);
+                    Log.info("[ServerSide][Package] file instrumented: " + file)
+                    return true;
+                } else {
+                    Log.info("[ServerSide][Package] file ignored: " + file)
+                }
+            } else {
+                SourceMap.registerSourceMap(root + file);
+                Log.info("[ServerSide][App.js] file instrumented: " + file)
+                return true;
+            }
         }
         return false;
     }
