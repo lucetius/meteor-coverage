@@ -39,8 +39,8 @@ Meteor.sendCoverage = function (callback) {
 /**
 * Usage: Meteor.exportCoverage(null, function(err) {console.log(err)})
 */
-Meteor.exportCoverage = function (type, callback) {
-    var url = type ? '/coverage/export/'+type : '/coverage/export';
+Meteor.exportCoverage = function (type, name, callback) {
+    var url = type ? '/coverage/export/'+type+'/'+name : '/coverage/export';
     $.ajax({
         method: 'GET',
         url: url,

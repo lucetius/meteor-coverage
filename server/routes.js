@@ -18,7 +18,7 @@ if (IS_COVERAGE_ACTIVE) {
     // Show static assets
     getRoute.route('/coverage/asset/:filename', Handlers.getAsset);
 
-    getRoute.route('/coverage/export/:type?', Handlers.exportFile);
+    getRoute.route('/coverage/export/:type?/:name?', Handlers.exportFile);
 
     getRoute.route('/coverage/import', Handlers.importCoverage);
 

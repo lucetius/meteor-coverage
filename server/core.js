@@ -98,8 +98,8 @@ if (IS_COVERAGE_ACTIVE) {
         setCoverageObject(coverageMap.toJSON());
     }
 
-    function exportFile (res, type) {
-        Log.info("export coverage using the following format:", type)
+    function exportFile (res, type, name) {
+        Log.info("export coverage using the following format:", type, name)
 
         switch (type) {
             case 'lcovonly':
@@ -111,6 +111,7 @@ if (IS_COVERAGE_ACTIVE) {
                 break;
         }
         var coverage = getCoverageObject();
+        const _dateObj = new Date();
 
         switch (type) {
             case 'clover':
@@ -155,7 +156,7 @@ if (IS_COVERAGE_ACTIVE) {
                 break;
             case 'coverage':
                 var coverageReport = JSON.stringify(coverage),
-                    reportPath = path.join(COVERAGE_APP_FOLDER, reportFilename);
+                    reportPath = path.join(COVERAGE_APP_FOLDER, name + '-' + _dateObj.valueOf() + '-' + reportFilename);
                 fs.writeFile(reportPath, coverageReport, function (err) {
                     if (err) {
                         throw "failed to write report file: "+reportPath
